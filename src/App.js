@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import styled from '@emotion/styled'
+import { css, ThemeProvider } from '@emotion/react'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+   // const state = 'red'
+   return (
+      <ThemeProvider
+         theme={css`
+            background-color: red;
+         `}
+      >
+         <div>
+            <h1>Hello</h1>
+            <Button>
+               <Span>Button</Span>
+            </Button>
+         </div>
+      </ThemeProvider>
+   )
 }
+const Span = styled.div`
+   color: red;
+`
+const Button = styled.button`
+   padding: 32px;
+   background-color: ${({ props }) => props || 'blue'};
+   font-size: 24px;
+   border-radius: 4px;
 
-export default App;
+   font-weight: bold;
+   &:hover {
+      color: white;
+   }
+   ${Span} {
+      color: white;
+   }
+`
+
+export default App
