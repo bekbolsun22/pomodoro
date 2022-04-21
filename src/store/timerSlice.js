@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initState = {
    settings: {
-      pomodoro: 0.1,
+      pomodoro: 0.2,
       shortBreak: 0.2,
       longBreak: 0.1,
       longBreakInterval: 2,

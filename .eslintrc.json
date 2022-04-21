@@ -62,6 +62,7 @@
       "jsx-a11y/no-noninteractive-element-interactions": ["off"],
       "jsx-a11y/click-events-have-key-events": ["off"],
       "react/button-has-type": ["off"],
-      "consistent-return": ["error"]
+      "consistent-return": ["error"],
+      "jsx-a11y/media-has-caption": ["off"]
    }
 }

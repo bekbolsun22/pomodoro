@@ -21,7 +21,7 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
    }, [stage])
 
    const clockTicking = useCallback(() => {
-      if (minutes === 0 && seconds === 0) {
+      if (minutes === 0 && seconds === 1) {
          timeUp()
       } else if (seconds === 0) {
          setMinutes((minute) => minute - 1)
