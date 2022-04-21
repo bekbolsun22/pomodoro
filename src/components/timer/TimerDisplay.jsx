@@ -2,8 +2,8 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { useSelector } from 'react-redux'
 import { TimerOption } from './TimerOption'
-import { Button } from '../UI/Button'
 import { modeTimerSettings } from '../../utils/constants/general'
+import { getTimeInFormat } from '../../utils/helpers/general'
 
 const options = [
    { mode: 'Pomodoro', stage: 0 },
@@ -16,6 +16,7 @@ export const TimerDisplay = ({
    minutes,
    seconds,
    onToggleTimerTicking,
+   isTicking,
 }) => {
    const stage = useSelector((state) => state.mode.stage)
    return (
@@ -32,16 +33,14 @@ export const TimerDisplay = ({
                   />
                ))}
             </Options>
-            <Timer>
-               {minutes}:
-               {
-                  `${
-                     seconds % 60 > 9 ? seconds % 60 : `0${seconds % 60}`
-                  }`.split('.')[0]
-               }
-            </Timer>
-            <StartTimerButton color={modeTimerSettings[stage].color}>
-               <Button onClick={onToggleTimerTicking}>START</Button>
+            <Timer>{getTimeInFormat.clock(minutes, seconds)}</Timer>
+            <StartTimerButton
+               color={modeTimerSettings[stage].color}
+               isStarted={isTicking}
+            >
+               <button onClick={onToggleTimerTicking}>
+                  {isTicking ? 'START' : 'STOP'}
+               </button>
             </StartTimerButton>
          </TimerBlock>
          <CountOfTimerLoop>#1</CountOfTimerLoop>
@@ -82,10 +81,13 @@ const StartTimerButton = styled.div`
    & button {
       cursor: pointer;
       border: none;
-      margin: 20px 0px 0px;
+      margin: 10px 0px 0px;
       padding: 0px 12px;
       border-radius: 4px;
-      box-shadow: rgb(235 235 235) 0px 6px 0px;
+      box-shadow: ${({ isStarted }) =>
+         isStarted ? 'rgb(235 235 235) 0px 6px 0px' : ''};
+      position: relative;
+      top: ${({ isStarted }) => (isStarted ? '0' : '7px')};
       font-size: 22px;
       color: ${({ color }) => color || ''};
       height: 55px;

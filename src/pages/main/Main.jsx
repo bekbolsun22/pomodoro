@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { TimerDisplay } from '../../components/timer/TimerDisplay'
@@ -13,28 +13,11 @@ import { modeTimerSettings } from '../../utils/constants/general'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
+
    const { pomodoro, shortBreak, longBreak } = useSelector(
       (state) => state.timer.settings
    )
    const dispatch = useDispatch()
-
-   const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
-   const [timerTicking, toggleTimerTicking] = useToggle(true)
-
-   const timeStage = {
-      0: pomodoro,
-      1: shortBreak,
-      2: longBreak,
-   }
-   const timeUp = () => {
-      alert(`it's time!`)
-   }
-   const { minutes, seconds } = useTimer(
-      timeStage[stage],
-      timeUp,
-      stage,
-      timerTicking
-   )
 
    const [timerSettingValues, setTimerSettingValues] = useState({
       pomodoro: 25,
@@ -46,6 +29,23 @@ const Main = () => {
       isAutoStartBreaks: false,
       isAutoStartPomodoros: false,
    })
+
+   const [timeStage, setTimeStage] = useState(null)
+   const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
+   const [timerTicking, toggleTimerTicking] = useToggle(true)
+   const { minutes, seconds } = useTimer(timeStage, timeUp, stage, timerTicking)
+
+   function timeUp() {
+      alert(`it's time!`)
+   }
+   useEffect(() => {
+      const currentMode = {
+         0: pomodoro,
+         1: shortBreak,
+         2: longBreak,
+      }
+      setTimeStage(currentMode[stage])
+   }, [pomodoro, shortBreak, longBreak, stage])
 
    const changeSettingValuesHandler = (e) => {
       const { name, value } = e.target
@@ -66,8 +66,9 @@ const Main = () => {
       })
    }
    const saveSettingValuesToStoreHandler = () => {
-      const settings = Object.assign(timerSettingValues, isAutoStarts)
+      const settings = { ...timerSettingValues, ...isAutoStarts }
       dispatch(timerActions.updateTimerSettings(settings))
+      toggleVisibleTimerSetting()
    }
    const switchModeStageHandler = (stage) => {
       dispatch(modeActions.switchModeStage(stage))
@@ -81,6 +82,7 @@ const Main = () => {
                minutes={minutes}
                seconds={seconds}
                onToggleTimerTicking={toggleTimerTicking}
+               isTicking={timerTicking}
             />
          </Background>
          {isVisibleTimerSetting &&

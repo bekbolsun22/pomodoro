@@ -15,7 +15,7 @@ export const TimerSetting = ({
    const { pomodoro, shortBreak, longBreak, longBreakInterval } = settingValues
    const { isAutoStartBreaks, isAutoStartPomodoros } = isAutoStarts
    const isDisabled = Object.values(settingValues).some(
-      (setting) => setting <= 0
+      (setting) => Number(setting) <= 0
    )
    return (
       <Modal>
@@ -147,6 +147,7 @@ const SettingBlock = styled.div`
    padding: 20px 20px 0px;
    font-family: 'Nunito', sans-serif;
 `
+
 const SettingTop = styled.div`
    display: flex;
    justify-content: space-between;
@@ -171,6 +172,7 @@ const SettingLabel = styled.h2`
    font-weight: bold;
    font-size: 16px;
 `
+
 const SettingInputs = styled.div`
    padding: 20px 0;
    border-block: 1px solid #e6e5e5;
@@ -181,11 +183,13 @@ const InputWrapper = styled.div`
    justify-content: space-between;
    margin-top: 5px;
 `
+
 const InputBlock = styled.div`
    display: flex;
    flex-direction: column;
    width: 98px;
 `
+
 const AdvancedSettingsWrapper = styled.div`
    display: flex;
    align-items: center;
@@ -194,6 +198,7 @@ const AdvancedSettingsWrapper = styled.div`
    border-bottom: ${({ borderBottom }) =>
       borderBottom ? '1px solid #e6e5e5' : 's'};
 `
+
 const AutoStartCheckbox = styled.label`
    font-size: 17px;
    position: relative;
@@ -238,6 +243,7 @@ const AutoStartCheckbox = styled.label`
       transition: 0.4s;
    }
 `
+
 const LongBreakIntervalInputWrapper = styled.div`
    width: 75px;
 `
@@ -255,6 +261,7 @@ const AlarmSoundSelectWrapper = styled.div`
       border: none;
    }
 `
+
 const SaveSettingButtonWrapper = styled.div`
    padding: 14px 20px;
    text-align: right;

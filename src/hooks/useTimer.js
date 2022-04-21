@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { getTimeInFormat } from '../utils/helpers/general'
 
 export const useTimer = (timeStage, timeUp, stage, ticking) => {
    const [minutes, setMinutes] = useState(0)
@@ -6,13 +7,9 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
    const [consumedSeconds, setConsumedSeconds] = useState(0)
 
    const getTickingTime = useCallback(() => {
-      const seconds = (timeStage * 3600) / 60
-      const time = `${Math.floor(seconds / 60)}:${
-         seconds % 60 > 9 ? seconds % 60 : `0${seconds % 60}`
-      }`
-      const [minute, second] = time.split(':')
-      setMinutes(Number(minute))
-      setSeconds(Number(second))
+      const { minute, second } = getTimeInFormat.minutesAndSeconds(timeStage)
+      setMinutes(minute)
+      setSeconds(second)
    }, [timeStage])
 
    useEffect(() => {
