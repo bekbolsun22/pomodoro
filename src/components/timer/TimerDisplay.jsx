@@ -34,8 +34,8 @@ export const TimerDisplay = () => {
                ))}
             </Options>
             <Timer>25:00</Timer>
-            <StartTimerButton>
-               <Button>Start</Button>
+            <StartTimerButton color={modeTimerSettings[stage].color}>
+               <Button>START</Button>
             </StartTimerButton>
          </TimerBlock>
          <CountOfTimerLoop>#1</CountOfTimerLoop>
@@ -52,7 +52,7 @@ const TimerBlock = styled.div`
    background-color: rgba(255, 255, 255, 0.1);
    width: 480px;
    padding: 20px 0px 30px;
-   margin: 50px auto;
+   margin: 20px auto;
    border-radius: 6px;
    margin-bottom: 20px;
 `
@@ -62,10 +62,13 @@ const Options = styled.div`
    align-items: center;
 `
 const Timer = styled.div`
-   font-size: 120px;
+   font-size: 110px;
    font-weight: bold;
    text-align: center;
    margin-top: 20px;
+   font-family: 'Istok Web', sans-serif;
+   font-weight: bold;
+   letter-spacing: 5px;
 `
 const StartTimerButton = styled.div`
    display: flex;
@@ -78,11 +81,13 @@ const StartTimerButton = styled.div`
       border-radius: 4px;
       box-shadow: rgb(235 235 235) 0px 6px 0px;
       font-size: 22px;
+      color: ${({ color }) => color || ''};
       height: 55px;
-      color: rgb(76, 145, 149);
       font-weight: bold;
       width: 200px;
       background-color: white;
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: 0.5px;
       transition: color 0.5s ease-in-out 0s;
    }
 `
@@ -91,12 +96,14 @@ const CountOfTimerLoop = styled.p`
    opacity: 0.6;
    margin-bottom: 4px;
    text-align: center;
+   font-family: 'Nunito', sans-serif;
 `
 
 const TimerMessage = styled.h1`
-   font-size: 18px;
-   font-weight: 100;
+   font-size: 19px;
    color: white;
    overflow-wrap: break-word;
    text-align: center;
+   font-family: 'Open Sans', sans-serif;
+   font-weight: 100;
 `
