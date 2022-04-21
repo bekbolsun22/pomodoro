@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { useDispatch, useSelector } from 'react-redux'
-import { modeActions } from '../../store/modeSlice'
+import { useSelector } from 'react-redux'
 import { TimerOption } from './TimerOption'
 import { Button } from '../UI/Button'
 import { modeTimerSettings } from '../../utils/constants/general'
@@ -12,13 +11,13 @@ const options = [
    { mode: 'Long Break', stage: 2 },
 ]
 
-export const TimerDisplay = () => {
+export const TimerDisplay = ({
+   onSwitchModeStage,
+   minutes,
+   seconds,
+   onToggleTimerTicking,
+}) => {
    const stage = useSelector((state) => state.mode.stage)
-   const dispath = useDispatch()
-
-   const switchModeStageHandler = (stage) => {
-      dispath(modeActions.switchModeStage(stage))
-   }
    return (
       <TimerDisplayBlock>
          <TimerBlock>
@@ -29,13 +28,20 @@ export const TimerDisplay = () => {
                      isActive={option.stage === stage}
                      mode={option.mode}
                      stage={option.stage}
-                     onSwitchMode={switchModeStageHandler}
+                     onSwitchMode={onSwitchModeStage}
                   />
                ))}
             </Options>
-            <Timer>25:00</Timer>
+            <Timer>
+               {minutes}:
+               {
+                  `${
+                     seconds % 60 > 9 ? seconds % 60 : `0${seconds % 60}`
+                  }`.split('.')[0]
+               }
+            </Timer>
             <StartTimerButton color={modeTimerSettings[stage].color}>
-               <Button>START</Button>
+               <Button onClick={onToggleTimerTicking}>START</Button>
             </StartTimerButton>
          </TimerBlock>
          <CountOfTimerLoop>#1</CountOfTimerLoop>

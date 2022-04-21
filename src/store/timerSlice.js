@@ -14,7 +14,11 @@ const initState = {
 const timerSlice = createSlice({
    name: 'timer',
    initialState: initState,
-   reducers: {},
+   reducers: {
+      updateTimerSettings(state, { payload: settings }) {
+         state.settings = settings
+      },
+   },
 })
 
 export const timerActions = timerSlice.actions
