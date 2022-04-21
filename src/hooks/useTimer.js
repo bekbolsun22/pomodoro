@@ -16,6 +16,10 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
       getTickingTime()
    }, [getTickingTime])
 
+   useEffect(() => {
+      setConsumedSeconds(0)
+   }, [stage])
+
    const clockTicking = useCallback(() => {
       if (minutes === 0 && seconds === 0) {
          timeUp()
@@ -43,5 +47,6 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
          clearInterval(timer)
       }
    }, [ticking, consumedSeconds, clockTicking, setConsumedSeconds])
+
    return { minutes, seconds, consumedSeconds }
 }

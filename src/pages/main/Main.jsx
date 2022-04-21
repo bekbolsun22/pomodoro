@@ -15,11 +15,17 @@ import { modeTimerSettings } from '../../utils/constants/general'
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
 
-   const { pomodoro, shortBreak, longBreak, longBreakInterval } = useSelector(
-      (state) => state.timer.settings
-   )
-   // console.log(pomodoro)
+   const {
+      pomodoro,
+      shortBreak,
+      longBreak,
+      longBreakInterval,
+      isAutoStartBreaks,
+      isAutoStartPomodoros,
+   } = useSelector((state) => state.timer.settings)
+
    const dispatch = useDispatch()
+
    const setStage = (stage) => dispatch(modeActions.switchModeStage(stage))
 
    const [timerSettingValues, setTimerSettingValues] = useState({
@@ -35,6 +41,8 @@ const Main = () => {
    const settings = { ...timerSettingValues, ...isAutoStarts }
    const [intervalCount, setIntervalCount] = useState(1)
    const [countOfTimerLoop, setCountOfTimerLoop] = useState(1)
+   const [timeStage, setTimeStage] = useState(null)
+   const [timerTicking, setTimerTicking] = useState(true)
 
    const timeUp = useCallback(() => {
       switch (stage) {
@@ -59,8 +67,6 @@ const Main = () => {
       }
    }, [stage, intervalCount, longBreakInterval])
 
-   const [timeStage, setTimeStage] = useState(null)
-   const [timerTicking, setTimerTicking] = useState(true)
    const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
 
    useEffect(() => {
@@ -78,6 +84,25 @@ const Main = () => {
       stage,
       timerTicking
    )
+
+   const switchAutoStartTimer = useCallback(() => {
+      const currentAutoStart = {
+         0: isAutoStartPomodoros,
+         1: isAutoStartBreaks,
+         2: isAutoStartBreaks,
+      }
+      if (currentAutoStart[stage] && consumedSeconds) {
+         setTimerTicking(false)
+      }
+      if (!consumedSeconds && !currentAutoStart[stage]) {
+         setTimerTicking(true)
+      }
+   }, [stage, isAutoStartPomodoros, isAutoStartBreaks, consumedSeconds])
+
+   useEffect(() => {
+      switchAutoStartTimer()
+   }, [switchAutoStartTimer])
+
    const changeSettingValuesHandler = (e) => {
       const { name, value } = e.target
       setTimerSettingValues((values) => {
@@ -101,6 +126,7 @@ const Main = () => {
       toggleVisibleTimerSetting()
    }
    const resetTimer = () => {
+      setTimerTicking(true)
       dispatch(timerActions.updateTimerSettings(settings))
    }
    const switchModeStageHandler = (stageFromButton) => {
@@ -111,7 +137,6 @@ const Main = () => {
       if (isYes) {
          resetTimer()
          setStage(stageFromButton)
-         setTimerTicking(true)
       } else if (!consumedSeconds) {
          setStage(stageFromButton)
       }
@@ -123,6 +148,7 @@ const Main = () => {
    const toggleTimerTicking = () => {
       setTimerTicking((ticking) => !ticking)
    }
+
    return (
       <>
          <Background bgColor={modeTimerSettings[stage].color}>
