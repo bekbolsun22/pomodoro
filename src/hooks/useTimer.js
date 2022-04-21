@@ -10,7 +10,7 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
       const { minute, second } = getTimeInFormat.minutesAndSeconds(timeStage)
       setMinutes(minute)
       setSeconds(second)
-   }, [timeStage])
+   }, [timeStage, stage])
 
    useEffect(() => {
       getTickingTime()
@@ -35,18 +35,13 @@ export const useTimer = (timeStage, timeUp, stage, ticking) => {
          if (!ticking) {
             clockTicking()
             setConsumedSeconds((second) => second + 1)
+         } else {
+            clearInterval(timer)
          }
       }, 1000)
       return () => {
          clearInterval(timer)
       }
-   }, [
-      ticking,
-      stage,
-      consumedSeconds,
-      clockTicking,
-      setConsumedSeconds,
-      timeUp,
-   ])
+   }, [ticking, consumedSeconds, clockTicking, setConsumedSeconds])
    return { minutes, seconds, consumedSeconds }
 }

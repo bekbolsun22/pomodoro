@@ -17,6 +17,7 @@ export const TimerDisplay = ({
    seconds,
    onToggleTimerTicking,
    isTicking,
+   countOfTimerLoop,
 }) => {
    const stage = useSelector((state) => state.mode.stage)
    return (
@@ -43,7 +44,7 @@ export const TimerDisplay = ({
                </button>
             </StartTimerButton>
          </TimerBlock>
-         <CountOfTimerLoop>#1</CountOfTimerLoop>
+         <CountOfTimerLoop>#{countOfTimerLoop}</CountOfTimerLoop>
          <TimerMessage>{modeTimerSettings[stage].message}</TimerMessage>
       </TimerDisplayBlock>
    )
