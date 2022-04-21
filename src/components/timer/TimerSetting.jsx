@@ -4,7 +4,19 @@ import { Modal } from '../UI/Modal'
 import close from '../../assets/icons/x.svg'
 import { Input } from '../UI/Input'
 
-export const TimerSetting = ({ onChangeVisible }) => {
+export const TimerSetting = ({
+   onChangeVisible,
+   settingValues,
+   onChangeSettingValues,
+   isAutoStarts,
+   onChangeAutoStart,
+   onUpdateSettings,
+}) => {
+   const { pomodoro, shortBreak, longBreak, longBreakInterval } = settingValues
+   const { isAutoStartBreaks, isAutoStartPomodoros } = isAutoStarts
+   const isDisabled = Object.values(settingValues).some(
+      (setting) => Number(setting) <= 0
+   )
    return (
       <Modal>
          <SettingBlock>
@@ -27,6 +39,9 @@ export const TimerSetting = ({ onChangeVisible }) => {
                         borderRds="4px"
                         fontSize="16px"
                         color="rgb(85, 85, 85)"
+                        name="pomodoro"
+                        onChange={onChangeSettingValues}
+                        value={pomodoro}
                      />
                   </InputBlock>
                   <InputBlock>
@@ -40,6 +55,9 @@ export const TimerSetting = ({ onChangeVisible }) => {
                         borderRds="4px"
                         fontSize="16px"
                         color="rgb(85, 85, 85)"
+                        name="shortBreak"
+                        onChange={onChangeSettingValues}
+                        value={shortBreak}
                      />
                   </InputBlock>
                   <InputBlock>
@@ -53,26 +71,39 @@ export const TimerSetting = ({ onChangeVisible }) => {
                         borderRds="4px"
                         fontSize="16px"
                         color="rgb(85, 85, 85)"
+                        name="longBreak"
+                        onChange={onChangeSettingValues}
+                        value={longBreak}
                      />
                   </InputBlock>
                </InputWrapper>
             </SettingInputs>
 
-            <AdvancedSettingsWrapper>
+            <AdvancedSettingsWrapper borderBottom>
                <SettingLabel>Auto start Breaks?</SettingLabel>
                <AutoStartCheckbox>
-                  <input type="checkbox" />
+                  <input
+                     type="checkbox"
+                     name="isAutoStartBreaks"
+                     onChange={onChangeAutoStart}
+                     checked={isAutoStartBreaks}
+                  />
                   <span />
                </AutoStartCheckbox>
             </AdvancedSettingsWrapper>
-            <AdvancedSettingsWrapper>
+            <AdvancedSettingsWrapper borderBottom>
                <SettingLabel>Auto start Pomodoros?</SettingLabel>
                <AutoStartCheckbox>
-                  <input type="checkbox" />
+                  <input
+                     type="checkbox"
+                     name="isAutoStartPomodoros"
+                     onChange={onChangeAutoStart}
+                     checked={isAutoStartPomodoros}
+                  />
                   <span />
                </AutoStartCheckbox>
             </AdvancedSettingsWrapper>
-            <AdvancedSettingsWrapper>
+            <AdvancedSettingsWrapper borderBottom>
                <SettingLabel>Long Break interval</SettingLabel>
                <LongBreakIntervalInputWrapper>
                   <Input
@@ -84,6 +115,9 @@ export const TimerSetting = ({ onChangeVisible }) => {
                      borderRds="4px"
                      fontSize="16px"
                      color="rgb(85, 85, 85)"
+                     name="longBreakInterval"
+                     onChange={onChangeSettingValues}
+                     value={longBreakInterval}
                   />
                </LongBreakIntervalInputWrapper>
             </AdvancedSettingsWrapper>
@@ -100,6 +134,11 @@ export const TimerSetting = ({ onChangeVisible }) => {
                </AlarmSoundSelectWrapper>
             </AdvancedSettingsWrapper>
          </SettingBlock>
+         <SaveSettingButtonWrapper>
+            <button onClick={onUpdateSettings} disabled={isDisabled}>
+               OK
+            </button>
+         </SaveSettingButtonWrapper>
       </Modal>
    )
 }
@@ -156,7 +195,8 @@ const AdvancedSettingsWrapper = styled.div`
    align-items: center;
    justify-content: space-between;
    padding: 20px 0;
-   border-bottom: 1px solid #e6e5e5;
+   border-bottom: ${({ borderBottom }) =>
+      borderBottom ? '1px solid #e6e5e5' : 's'};
 `
 
 const AutoStartCheckbox = styled.label`
@@ -219,5 +259,31 @@ const AlarmSoundSelectWrapper = styled.div`
       font-size: 14px;
       outline: none;
       border: none;
+   }
+`
+
+const SaveSettingButtonWrapper = styled.div`
+   padding: 14px 20px;
+   text-align: right;
+   border-bottom-left-radius: 8px;
+   border-bottom-right-radius: 8px;
+   background-color: rgb(239, 239, 239);
+   & button {
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+      opacity: 0.9;
+      font-size: 14px;
+      padding: 8px 12px;
+      width: 70px;
+      background-color: rgb(34, 34, 34);
+      border: 2px solid rgb(34, 34, 34);
+      &:hover {
+         opacity: 1;
+      }
+      &:disabled {
+         opacity: 0.5;
+         cursor: not-allowed;
+      }
    }
 `

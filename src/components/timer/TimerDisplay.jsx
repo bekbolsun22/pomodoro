@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { useDispatch, useSelector } from 'react-redux'
-import { modeActions } from '../../store/modeSlice'
+import { useSelector } from 'react-redux'
 import { TimerOption } from './TimerOption'
-import { Button } from '../UI/Button'
 import { modeTimerSettings } from '../../utils/constants/general'
+import { getTimeInFormat } from '../../utils/helpers/general'
 
 const options = [
    { mode: 'Pomodoro', stage: 0 },
@@ -12,13 +11,15 @@ const options = [
    { mode: 'Long Break', stage: 2 },
 ]
 
-export const TimerDisplay = () => {
+export const TimerDisplay = ({
+   onSwitchModeStage,
+   minutes,
+   seconds,
+   onToggleTimerTicking,
+   isTicking,
+   countOfTimerLoop,
+}) => {
    const stage = useSelector((state) => state.mode.stage)
-   const dispath = useDispatch()
-
-   const switchModeStageHandler = (stage) => {
-      dispath(modeActions.switchModeStage(stage))
-   }
    return (
       <TimerDisplayBlock>
          <TimerBlock>
@@ -29,16 +30,21 @@ export const TimerDisplay = () => {
                      isActive={option.stage === stage}
                      mode={option.mode}
                      stage={option.stage}
-                     onSwitchMode={switchModeStageHandler}
+                     onSwitchMode={onSwitchModeStage}
                   />
                ))}
             </Options>
-            <Timer>25:00</Timer>
-            <StartTimerButton color={modeTimerSettings[stage].color}>
-               <Button>START</Button>
+            <Timer>{getTimeInFormat.clock(minutes, seconds)}</Timer>
+            <StartTimerButton
+               color={modeTimerSettings[stage].color}
+               isStarted={isTicking}
+            >
+               <button onClick={onToggleTimerTicking}>
+                  {isTicking ? 'START' : 'STOP'}
+               </button>
             </StartTimerButton>
          </TimerBlock>
-         <CountOfTimerLoop>#1</CountOfTimerLoop>
+         <CountOfTimerLoop>#{countOfTimerLoop}</CountOfTimerLoop>
          <TimerMessage>{modeTimerSettings[stage].message}</TimerMessage>
       </TimerDisplayBlock>
    )
@@ -76,10 +82,13 @@ const StartTimerButton = styled.div`
    & button {
       cursor: pointer;
       border: none;
-      margin: 20px 0px 0px;
+      margin: 10px 0px 0px;
       padding: 0px 12px;
       border-radius: 4px;
-      box-shadow: rgb(235 235 235) 0px 6px 0px;
+      box-shadow: ${({ isStarted }) =>
+         isStarted ? 'rgb(235 235 235) 0px 6px 0px' : ''};
+      position: relative;
+      top: ${({ isStarted }) => (isStarted ? '0' : '7px')};
       font-size: 22px;
       color: ${({ color }) => color || ''};
       height: 55px;
