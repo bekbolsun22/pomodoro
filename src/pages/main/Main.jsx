@@ -60,8 +60,7 @@ const Main = () => {
 
    const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
 
-   const timeUp = useCallback(() => {
-      timeUpAlarm.play()
+   const switchStageHandler = () => {
       switch (stage) {
          case 0:
             if (intervalCount === Number(longBreakInterval)) {
@@ -82,7 +81,12 @@ const Main = () => {
          default:
             return setStage(0)
       }
-   }, [stage, intervalCount, longBreakInterval, timeUpAlarm])
+   }
+
+   const timeUp = useCallback(() => {
+      timeUpAlarm.play()
+      switchStageHandler()
+   }, [timeUpAlarm, switchStageHandler])
 
    useEffect(() => {
       const currentMode = {
@@ -160,11 +164,11 @@ const Main = () => {
       dispatch(timerActions.updateTimerSettings(settings))
    }
    const switchModeStageHandler = (stageFromButton) => {
-      const isYes =
+      const shouldUserToSwicthMode =
          consumedSeconds && stage !== stageFromButton && !timerTicking
             ? window.confirm('Are you sure you want to switch?')
             : false
-      if (isYes) {
+      if (shouldUserToSwicthMode) {
          resetTimer()
          setStage(stageFromButton)
       } else if (!consumedSeconds) {
@@ -181,18 +185,13 @@ const Main = () => {
    }
 
    const moveToNextStage = () => {
-      const isYes = true
+      const shouldUserToFinishTheRoundEarly = true
          ? window.confirm(
               'Are you sure you want to finish the round early? (The remaining time will not be counted in the report.)'
            )
          : false
-      if (isYes) {
-         if (stage === 0) {
-            setStage(1)
-         }
-         if (stage === 1 || stage === 2) {
-            setStage(0)
-         }
+      if (shouldUserToFinishTheRoundEarly) {
+         switchStageHandler()
       }
    }
 
