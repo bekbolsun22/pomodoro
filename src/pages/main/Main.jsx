@@ -5,16 +5,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { TimerDisplay } from '../../components/timer/TimerDisplay'
 import { TimerHeader } from '../../components/timer/TimerHeader'
 import { TimerSetting } from '../../components/timer/TimerSetting'
+import Audio from '../../components/UI/Audio'
 import { Background } from '../../components/UI/Background'
+import { useSound } from '../../hooks/useSound'
 import { useTimer } from '../../hooks/useTimer'
 import useToggle from '../../hooks/useToggle'
 import { modeActions } from '../../store/modeSlice'
 import { timerActions } from '../../store/timerSlice'
-import { modeTimerSettings } from '../../utils/constants/general'
+import { modeTimerSettings, sounds } from '../../utils/constants/general'
+import startStopSound from '../../assets/sounds/start-stop-sound.mp3'
+import { localstorage } from '../../utils/helpers/general'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
-
+   const timerSettingsFromStore = useSelector((state) => state.timer)
    const {
       pomodoro,
       shortBreak,
@@ -23,28 +27,38 @@ const Main = () => {
       isAutoStartBreaks,
       isAutoStartPomodoros,
    } = useSelector((state) => state.timer.settings)
-
    const dispatch = useDispatch()
 
    const setStage = (stage) => dispatch(modeActions.switchModeStage(stage))
 
    const [timerSettingValues, setTimerSettingValues] = useState({
-      pomodoro: 0.1,
-      shortBreak: 0.1,
-      longBreak: 0.1,
-      longBreakInterval: 2,
+      pomodoro,
+      shortBreak,
+      longBreak,
+      longBreakInterval,
    })
    const [isAutoStarts, setIsAutoStarts] = useState({
-      isAutoStartBreaks: false,
-      isAutoStartPomodoros: false,
+      isAutoStartBreaks,
+      isAutoStartPomodoros,
    })
    const settings = { ...timerSettingValues, ...isAutoStarts }
+
    const [intervalCount, setIntervalCount] = useState(1)
+
    const [countOfTimerLoop, setCountOfTimerLoop] = useState(1)
+
    const [timeStage, setTimeStage] = useState(null)
+
    const [timerTicking, setTimerTicking] = useState(true)
 
+   const startStop = useSound()
+
+   const timeUpAlarm = useSound()
+
+   const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
+
    const timeUp = useCallback(() => {
+      timeUpAlarm.play()
       switch (stage) {
          case 0:
             if (intervalCount === Number(longBreakInterval)) {
@@ -65,9 +79,7 @@ const Main = () => {
          default:
             return setStage(0)
       }
-   }, [stage, intervalCount, longBreakInterval])
-
-   const [isVisibleTimerSetting, toggleVisibleTimerSetting] = useToggle(false)
+   }, [stage, intervalCount, longBreakInterval, timeUpAlarm])
 
    useEffect(() => {
       const currentMode = {
@@ -102,6 +114,10 @@ const Main = () => {
    useEffect(() => {
       switchAutoStartTimer()
    }, [switchAutoStartTimer])
+
+   useEffect(() => {
+      localstorage.save('settings', timerSettingsFromStore)
+   }, [timerSettingsFromStore])
 
    const changeSettingValuesHandler = (e) => {
       const { name, value } = e.target
@@ -146,6 +162,7 @@ const Main = () => {
    }
 
    const toggleTimerTicking = () => {
+      startStop.play()
       setTimerTicking((ticking) => !ticking)
    }
 
@@ -164,18 +181,26 @@ const Main = () => {
          </Background>
          {isVisibleTimerSetting &&
             ReactDOM.createPortal(
-               <Background bgColor="rgba(0, 0, 0, 0.4)">
-                  <TimerSetting
-                     onChangeVisible={toggleVisibleTimerSetting}
-                     settingValues={timerSettingValues}
-                     onChangeSettingValues={changeSettingValuesHandler}
-                     isAutoStarts={isAutoStarts}
-                     onChangeAutoStart={changeAutoStartsHandler}
-                     onUpdateSettings={saveSettingValuesToStoreHandler}
-                  />
-               </Background>,
+               <Background
+                  bgColor="#00000066"
+                  onClick={saveSettingValuesToStoreHandler}
+               />,
                document.getElementById('background')
             )}
+         {isVisibleTimerSetting &&
+            ReactDOM.createPortal(
+               <TimerSetting
+                  onChangeVisible={toggleVisibleTimerSetting}
+                  settingValues={timerSettingValues}
+                  onChangeSettingValues={changeSettingValuesHandler}
+                  isAutoStarts={isAutoStarts}
+                  onChangeAutoStart={changeAutoStartsHandler}
+                  onUpdateSettings={saveSettingValuesToStoreHandler}
+               />,
+               document.getElementById('modal')
+            )}
+         <Audio ref={startStop.ref} src={startStopSound} />
+         <Audio ref={timeUpAlarm.ref} src={sounds.src} />
       </>
    )
 }

@@ -1,7 +1,7 @@
 export const getTimeInFormat = {
    minutesAndSeconds(value) {
       const seconds = (value * 3600) / 60
-      const time = `${Math.floor(seconds / 60)}:${seconds % 60}`
+      const time = `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60)}`
       const [minute, second] = time.split(':')
       return { minute: Number(minute), second: Number(second) }
    },
@@ -11,5 +11,17 @@ export const getTimeInFormat = {
       }`.split('.')[0]
       const time = `${minutes}:${second}`
       return time
+   },
+}
+
+export const localstorage = {
+   save(key, value) {
+      return localStorage.setItem(key, JSON.stringify(value))
+   },
+   get(key) {
+      return JSON.parse(localStorage.getItem(key))
+   },
+   remove(key) {
+      return localStorage.removeItem(key)
    },
 }
