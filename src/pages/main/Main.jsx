@@ -200,7 +200,7 @@ const Main = () => {
       <>
          <Background bgColor={modeTimerSettings[stage].color}>
             <TimerHeader onChangeVisible={toggleVisibleTimerSetting} />
-            <TimerProgressBar chart={chartPercent} />
+            <TimerProgressBar chart={!consumedSeconds ? 0 : chartPercent} />
             <TimerDisplay
                onSwitchModeStage={switchModeStageHandler}
                minutes={minutes}
