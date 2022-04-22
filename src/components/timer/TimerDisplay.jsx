@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { TimerOption } from './TimerOption'
 import { modeTimerSettings } from '../../utils/constants/general'
 import { getTimeInFormat } from '../../utils/helpers/general'
+import next from '../../assets/icons/next.svg'
 
 const options = [
    { mode: 'Pomodoro', stage: 0 },
@@ -18,6 +19,7 @@ export const TimerDisplay = ({
    onToggleTimerTicking,
    isTicking,
    countOfTimerLoop,
+   onMoveToNextStage,
 }) => {
    const stage = useSelector((state) => state.mode.stage)
    return (
@@ -43,6 +45,11 @@ export const TimerDisplay = ({
                   {isTicking ? 'START' : 'STOP'}
                </button>
             </StartTimerButton>
+            <NextButtonWrapper>
+               {!isTicking && (
+                  <NextButton src={next} onClick={onMoveToNextStage} />
+               )}
+            </NextButtonWrapper>
          </TimerBlock>
          <CountOfTimerLoop>#{countOfTimerLoop}</CountOfTimerLoop>
          <TimerMessage>{modeTimerSettings[stage].message}</TimerMessage>
@@ -79,6 +86,9 @@ const Timer = styled.div`
 const StartTimerButton = styled.div`
    display: flex;
    justify-content: center;
+   & div {
+      width: 50%;
+   }
    & button {
       cursor: pointer;
       border: none;
@@ -99,6 +109,19 @@ const StartTimerButton = styled.div`
       letter-spacing: 0.5px;
       transition: color 0.5s ease-in-out 0s;
    }
+`
+const NextButton = styled.img`
+   width: 24px;
+   height: 24px;
+   position: relative;
+   bottom: 35px;
+   right: 80px;
+   cursor: pointer;
+`
+const NextButtonWrapper = styled.div`
+   height: 25px;
+   display: flex;
+   justify-content: flex-end;
 `
 const CountOfTimerLoop = styled.p`
    font-size: 16px;

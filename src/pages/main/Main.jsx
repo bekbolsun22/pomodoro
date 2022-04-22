@@ -15,6 +15,7 @@ import { timerActions } from '../../store/timerSlice'
 import { modeTimerSettings, sounds } from '../../utils/constants/general'
 import startStopSound from '../../assets/sounds/start-stop-sound.mp3'
 import { localstorage } from '../../utils/helpers/general'
+import { TimerProgressBar } from '../../components/timer/TimerProgressBar'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
@@ -48,6 +49,8 @@ const Main = () => {
    const [countOfTimerLoop, setCountOfTimerLoop] = useState(1)
 
    const [timeStage, setTimeStage] = useState(null)
+
+   const [chartPercent, setChartPercent] = useState(0)
 
    const [timerTicking, setTimerTicking] = useState(true)
 
@@ -96,6 +99,17 @@ const Main = () => {
       stage,
       timerTicking
    )
+
+   const calculatePercentage = useCallback(() => {
+      const second = (timeStage * 3600) / 60
+      const time = minutes * 60 + seconds
+      const percent = 100 - time / second / 0.01
+      setChartPercent(percent)
+   }, [minutes, seconds, timeStage, consumedSeconds])
+
+   useEffect(() => {
+      calculatePercentage()
+   }, [calculatePercentage])
 
    const switchAutoStartTimer = useCallback(() => {
       const currentAutoStart = {
@@ -166,10 +180,27 @@ const Main = () => {
       setTimerTicking((ticking) => !ticking)
    }
 
+   const moveToNextStage = () => {
+      const isYes = true
+         ? window.confirm(
+              'Are you sure you want to finish the round early? (The remaining time will not be counted in the report.)'
+           )
+         : false
+      if (isYes) {
+         if (stage === 0) {
+            setStage(1)
+         }
+         if (stage === 1 || stage === 2) {
+            setStage(0)
+         }
+      }
+   }
+
    return (
       <>
          <Background bgColor={modeTimerSettings[stage].color}>
             <TimerHeader onChangeVisible={toggleVisibleTimerSetting} />
+            <TimerProgressBar chart={chartPercent} />
             <TimerDisplay
                onSwitchModeStage={switchModeStageHandler}
                minutes={minutes}
@@ -177,6 +208,7 @@ const Main = () => {
                onToggleTimerTicking={toggleTimerTicking}
                isTicking={timerTicking}
                countOfTimerLoop={countOfTimerLoop}
+               onMoveToNextStage={moveToNextStage}
             />
          </Background>
          {isVisibleTimerSetting &&

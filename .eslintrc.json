@@ -63,6 +63,7 @@
       "jsx-a11y/click-events-have-key-events": ["off"],
       "react/button-has-type": ["off"],
       "consistent-return": ["error"],
-      "jsx-a11y/media-has-caption": ["off"]
+      "jsx-a11y/media-has-caption": ["off"],
+      "no-constant-condition": "off"
    }
 }
