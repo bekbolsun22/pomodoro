@@ -18,7 +18,7 @@ export const TimerSetting = ({
       (setting) => Number(setting) <= 0
    )
    return (
-      <Modal>
+      <Modal w="360px">
          <SettingBlock>
             <SettingTop>
                <SettingText>TIMER SETTING</SettingText>

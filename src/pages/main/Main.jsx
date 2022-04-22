@@ -14,10 +14,11 @@ import { modeActions } from '../../store/modeSlice'
 import { timerActions } from '../../store/timerSlice'
 import { modeTimerSettings, sounds } from '../../utils/constants/general'
 import startStopSound from '../../assets/sounds/start-stop-sound.mp3'
+import { localstorage } from '../../utils/helpers/general'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
-   // const timerSettingsFromStore = useSelector((state) => state.timer.settings)
+   const timerSettingsFromStore = useSelector((state) => state.timer)
    const {
       pomodoro,
       shortBreak,
@@ -37,8 +38,8 @@ const Main = () => {
       longBreakInterval,
    })
    const [isAutoStarts, setIsAutoStarts] = useState({
-      isAutoStartBreaks: false,
-      isAutoStartPomodoros: false,
+      isAutoStartBreaks,
+      isAutoStartPomodoros,
    })
    const settings = { ...timerSettingValues, ...isAutoStarts }
 
@@ -114,6 +115,10 @@ const Main = () => {
       switchAutoStartTimer()
    }, [switchAutoStartTimer])
 
+   useEffect(() => {
+      localstorage.save('settings', timerSettingsFromStore)
+   }, [timerSettingsFromStore])
+
    const changeSettingValuesHandler = (e) => {
       const { name, value } = e.target
       setTimerSettingValues((values) => {
@@ -177,7 +182,7 @@ const Main = () => {
          {isVisibleTimerSetting &&
             ReactDOM.createPortal(
                <Background
-                  bgColor="rgba(0, 0, 0, 0.4)"
+                  bgColor="#00000066"
                   onClick={saveSettingValuesToStoreHandler}
                />,
                document.getElementById('background')
