@@ -12,7 +12,13 @@ import { useTimer } from '../../hooks/useTimer'
 import useToggle from '../../hooks/useToggle'
 import { modeActions } from '../../store/modeSlice'
 import { timerActions } from '../../store/timerSlice'
-import { modeTimerSettings, sounds } from '../../utils/constants/general'
+import {
+   lonkBreakIndexOfStage,
+   modeTimerSettings,
+   pomodoroIndexOfStage,
+   shortBreakIndexOfStage,
+   sounds,
+} from '../../utils/constants/general'
 import startStopSound from '../../assets/sounds/start-stop-sound.mp3'
 import { localstorage } from '../../utils/helpers/general'
 import { TimerProgressBar } from '../../components/timer/TimerProgressBar'
@@ -62,24 +68,26 @@ const Main = () => {
 
    const switchStageHandler = () => {
       switch (stage) {
-         case 0:
+         case pomodoroIndexOfStage:
             setCountOfTimerLoop((count) => count + 1)
             if (intervalCount === Number(longBreakInterval)) {
-               return setStage(2)
+               return setStage(lonkBreakIndexOfStage)
             }
             setIntervalCount((count) => count + 1)
-            return setStage(1)
-         case 1:
-            return setStage(0)
-         case 2:
+            return setStage(shortBreakIndexOfStage)
+
+         case shortBreakIndexOfStage:
+            return setStage(pomodoroIndexOfStage)
+
+         case lonkBreakIndexOfStage:
             if (intervalCount === Number(longBreakInterval)) {
                setIntervalCount(1)
-               return setStage(0)
+               return setStage(pomodoroIndexOfStage)
             }
-            return setStage(0)
+            return setStage(pomodoroIndexOfStage)
 
          default:
-            return setStage(0)
+            return setStage(pomodoroIndexOfStage)
       }
    }
    const timeUp = useCallback(() => {
@@ -163,11 +171,11 @@ const Main = () => {
       dispatch(timerActions.updateTimerSettings(settings))
    }
    const switchModeStageHandler = (stageFromButton) => {
-      const shouldUserToSwicthMode =
+      const willUserToSwitchMode =
          consumedSeconds && stage !== stageFromButton && !timerTicking
             ? window.confirm('Are you sure you want to switch?')
             : false
-      if (shouldUserToSwicthMode) {
+      if (willUserToSwitchMode) {
          resetTimerHandler()
          setStage(stageFromButton)
       } else if (!consumedSeconds) {
@@ -184,12 +192,12 @@ const Main = () => {
    }
 
    const moveToNextStageHandler = () => {
-      const shouldUserToFinishTheRoundEarly = true
+      const willUserFinishTheRoundEarly = true
          ? window.confirm(
               'Are you sure you want to finish the round early? (The remaining time will not be counted in the report.)'
            )
          : false
-      if (shouldUserToFinishTheRoundEarly) {
+      if (willUserFinishTheRoundEarly) {
          switchStageHandler()
       }
    }

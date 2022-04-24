@@ -10,3 +10,7 @@ export const sounds = {
    src: timeUpAlarmSound,
    title: 'Bells',
 }
+
+export const pomodoroIndexOfStage = 0
+export const shortBreakIndexOfStage = 1
+export const lonkBreakIndexOfStage = 2
