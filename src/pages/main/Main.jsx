@@ -158,7 +158,7 @@ const Main = () => {
       dispatch(timerActions.updateTimerSettings(settings))
       toggleVisibleTimerSetting()
    }
-   const resetTimer = () => {
+   const resetTimerHandler = () => {
       setTimerTicking(true)
       dispatch(timerActions.updateTimerSettings(settings))
    }
@@ -168,7 +168,7 @@ const Main = () => {
             ? window.confirm('Are you sure you want to switch?')
             : false
       if (shouldUserToSwicthMode) {
-         resetTimer()
+         resetTimerHandler()
          setStage(stageFromButton)
       } else if (!consumedSeconds) {
          setStage(stageFromButton)
@@ -178,12 +178,12 @@ const Main = () => {
       }
    }
 
-   const toggleTimerTicking = () => {
+   const toggleTimerTickingHandler = () => {
       startStop.play()
       setTimerTicking((ticking) => !ticking)
    }
 
-   const moveToNextStage = () => {
+   const moveToNextStageHandler = () => {
       const shouldUserToFinishTheRoundEarly = true
          ? window.confirm(
               'Are you sure you want to finish the round early? (The remaining time will not be counted in the report.)'
@@ -203,10 +203,10 @@ const Main = () => {
                onSwitchModeStage={switchModeStageHandler}
                minutes={minutes}
                seconds={seconds}
-               onToggleTimerTicking={toggleTimerTicking}
+               onToggleTimerTicking={toggleTimerTickingHandler}
                isTicking={timerTicking}
                countOfTimerLoop={countOfTimerLoop}
-               onMoveToNextStage={moveToNextStage}
+               onMoveToNextStage={moveToNextStageHandler}
             />
          </Background>
          {isVisibleTimerSetting &&
