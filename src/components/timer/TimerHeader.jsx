@@ -45,7 +45,7 @@ const Title = styled.div`
    font-size: 20px;
    display: flex;
    align-items: center;
-   font-family: 'Nunito', sans-serif;
+   font-family: 'ArialRounded';
    & img {
       width: 25px;
       height: 25px;

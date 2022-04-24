@@ -145,7 +145,7 @@ export const TimerSetting = ({
 
 const SettingBlock = styled.div`
    padding: 20px 20px 0px;
-   font-family: 'Nunito', sans-serif;
+   font-family: 'ArialRounded';
 `
 
 const SettingTop = styled.div`
@@ -179,7 +179,7 @@ const SettingInputs = styled.div`
 `
 const InputWrapper = styled.div`
    display: flex;
-   width: 330px;
+   width: 360px;
    justify-content: space-between;
    margin-top: 5px;
 `
@@ -283,7 +283,7 @@ const SaveSettingButtonWrapper = styled.div`
       }
       &:disabled {
          opacity: 0.5;
-         cursor: not-allowed;
+         cursor: default;
       }
    }
 `

@@ -75,17 +75,16 @@ const Options = styled.div`
    align-items: center;
 `
 const Timer = styled.div`
-   font-size: 110px;
-   font-weight: bold;
+   font-size: 120px;
    text-align: center;
    margin-top: 20px;
-   font-family: 'Istok Web', sans-serif;
+   font-family: 'ArialRounded';
    font-weight: bold;
-   letter-spacing: 5px;
 `
 const StartTimerButton = styled.div`
    display: flex;
    justify-content: center;
+   margin-top: 10px;
    & div {
       width: 50%;
    }
@@ -105,16 +104,16 @@ const StartTimerButton = styled.div`
       font-weight: bold;
       width: 200px;
       background-color: white;
-      font-family: 'Nunito', sans-serif;
+      font-family: 'ArialRounded';
       letter-spacing: 0.5px;
       transition: color 0.5s ease-in-out 0s;
    }
 `
 const NextButton = styled.img`
-   width: 24px;
-   height: 24px;
+   width: 30px;
+   height: 30px;
    position: relative;
-   bottom: 35px;
+   bottom: 37px;
    right: 80px;
    cursor: pointer;
 `

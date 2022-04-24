@@ -63,11 +63,11 @@ const Main = () => {
    const switchStageHandler = () => {
       switch (stage) {
          case 0:
+            setCountOfTimerLoop((count) => count + 1)
             if (intervalCount === Number(longBreakInterval)) {
                return setStage(2)
             }
             setIntervalCount((count) => count + 1)
-            setCountOfTimerLoop((count) => count + 1)
             return setStage(1)
          case 1:
             return setStage(0)
@@ -82,7 +82,6 @@ const Main = () => {
             return setStage(0)
       }
    }
-
    const timeUp = useCallback(() => {
       timeUpAlarm.play()
       switchStageHandler()
