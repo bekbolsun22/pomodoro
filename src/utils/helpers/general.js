@@ -9,7 +9,8 @@ export const getTimeInFormat = {
       const second = `${
          seconds % 60 > 9 ? seconds % 60 : `0${seconds % 60}`
       }`.split('.')[0]
-      const time = `${minutes}:${second}`
+      const minute = `${minutes * 60 > 540 ? minutes : `0${minutes}`}`
+      const time = `${minute}:${second}`
       return time
    },
 }

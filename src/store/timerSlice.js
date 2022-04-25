@@ -10,6 +10,7 @@ const initState = {
       isAutoStartBreaks: false,
       isAutoStartPomodoros: false,
    },
+   selectedSound: 'Bells',
 }
 
 const settingsFromLocalStorage = localstorage.get('settings')
@@ -22,6 +23,9 @@ const timerSlice = createSlice({
    reducers: {
       updateTimerSettings(state, { payload: settings }) {
          state.settings = settings
+      },
+      updateTimeUpAlarm(state, { payload }) {
+         state.selectedSound = payload
       },
    },
 })

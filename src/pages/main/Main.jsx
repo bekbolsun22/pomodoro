@@ -12,13 +12,20 @@ import { useTimer } from '../../hooks/useTimer'
 import useToggle from '../../hooks/useToggle'
 import { modeActions } from '../../store/modeSlice'
 import { timerActions } from '../../store/timerSlice'
-import { modeTimerSettings, sounds } from '../../utils/constants/general'
+import {
+   lonkBreakIndexOfStage,
+   modeTimerSettings,
+   pomodoroIndexOfStage,
+   shortBreakIndexOfStage,
+   sounds,
+} from '../../utils/constants/general'
 import startStopSound from '../../assets/sounds/start-stop-sound.mp3'
 import { localstorage } from '../../utils/helpers/general'
 import { TimerProgressBar } from '../../components/timer/TimerProgressBar'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
+
    const timerSettingsFromStore = useSelector((state) => state.timer)
    const {
       pomodoro,
@@ -28,6 +35,8 @@ const Main = () => {
       isAutoStartBreaks,
       isAutoStartPomodoros,
    } = useSelector((state) => state.timer.settings)
+   const selectedSound = useSelector((state) => state.timer.selectedSound)
+
    const dispatch = useDispatch()
 
    const setStage = (stage) => dispatch(modeActions.switchModeStage(stage))
@@ -54,6 +63,13 @@ const Main = () => {
 
    const [timerTicking, setTimerTicking] = useState(true)
 
+   const [currentTimeUpAlarm, setCurrentTimeUpAlarm] = useState()
+
+   useEffect(() => {
+      const currentSound = sounds.find((sound) => sound.title === selectedSound)
+      setCurrentTimeUpAlarm(currentSound.src)
+   }, [selectedSound])
+
    const startStop = useSound()
 
    const timeUpAlarm = useSound()
@@ -62,27 +78,28 @@ const Main = () => {
 
    const switchStageHandler = () => {
       switch (stage) {
-         case 0:
+         case pomodoroIndexOfStage:
+            setCountOfTimerLoop((count) => count + 1)
             if (intervalCount === Number(longBreakInterval)) {
-               return setStage(2)
+               return setStage(lonkBreakIndexOfStage)
             }
             setIntervalCount((count) => count + 1)
-            setCountOfTimerLoop((count) => count + 1)
-            return setStage(1)
-         case 1:
-            return setStage(0)
-         case 2:
+            return setStage(shortBreakIndexOfStage)
+
+         case shortBreakIndexOfStage:
+            return setStage(pomodoroIndexOfStage)
+
+         case lonkBreakIndexOfStage:
             if (intervalCount === Number(longBreakInterval)) {
                setIntervalCount(1)
-               return setStage(0)
+               return setStage(pomodoroIndexOfStage)
             }
-            return setStage(0)
+            return setStage(pomodoroIndexOfStage)
 
          default:
-            return setStage(0)
+            return setStage(pomodoroIndexOfStage)
       }
    }
-
    const timeUp = useCallback(() => {
       timeUpAlarm.play()
       switchStageHandler()
@@ -159,17 +176,17 @@ const Main = () => {
       dispatch(timerActions.updateTimerSettings(settings))
       toggleVisibleTimerSetting()
    }
-   const resetTimer = () => {
+   const resetTimerHandler = () => {
       setTimerTicking(true)
       dispatch(timerActions.updateTimerSettings(settings))
    }
    const switchModeStageHandler = (stageFromButton) => {
-      const shouldUserToSwicthMode =
+      const willUserToSwitchMode =
          consumedSeconds && stage !== stageFromButton && !timerTicking
             ? window.confirm('Are you sure you want to switch?')
             : false
-      if (shouldUserToSwicthMode) {
-         resetTimer()
+      if (willUserToSwitchMode) {
+         resetTimerHandler()
          setStage(stageFromButton)
       } else if (!consumedSeconds) {
          setStage(stageFromButton)
@@ -179,22 +196,21 @@ const Main = () => {
       }
    }
 
-   const toggleTimerTicking = () => {
+   const toggleTimerTickingHandler = () => {
       startStop.play()
       setTimerTicking((ticking) => !ticking)
    }
 
-   const moveToNextStage = () => {
-      const shouldUserToFinishTheRoundEarly = true
+   const moveToNextStageHandler = () => {
+      const willUserFinishTheRoundEarly = true
          ? window.confirm(
               'Are you sure you want to finish the round early? (The remaining time will not be counted in the report.)'
            )
          : false
-      if (shouldUserToFinishTheRoundEarly) {
+      if (willUserFinishTheRoundEarly) {
          switchStageHandler()
       }
    }
-
    return (
       <>
          <Background bgColor={modeTimerSettings[stage].color}>
@@ -204,10 +220,10 @@ const Main = () => {
                onSwitchModeStage={switchModeStageHandler}
                minutes={minutes}
                seconds={seconds}
-               onToggleTimerTicking={toggleTimerTicking}
+               onToggleTimerTicking={toggleTimerTickingHandler}
                isTicking={timerTicking}
                countOfTimerLoop={countOfTimerLoop}
-               onMoveToNextStage={moveToNextStage}
+               onMoveToNextStage={moveToNextStageHandler}
             />
          </Background>
          {isVisibleTimerSetting &&
@@ -231,7 +247,7 @@ const Main = () => {
                document.getElementById('modal')
             )}
          <Audio ref={startStop.ref} src={startStopSound} />
-         <Audio ref={timeUpAlarm.ref} src={sounds.src} />
+         <Audio ref={timeUpAlarm.ref} src={currentTimeUpAlarm} />
       </>
    )
 }

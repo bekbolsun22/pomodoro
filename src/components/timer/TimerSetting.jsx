@@ -3,6 +3,7 @@ import React from 'react'
 import { Modal } from '../UI/Modal'
 import close from '../../assets/icons/x.svg'
 import { Input } from '../UI/Input'
+import { TimerSettingSelectDropdown } from './TimerSettingSelectDropdown'
 
 export const TimerSetting = ({
    onChangeVisible,
@@ -42,6 +43,7 @@ export const TimerSetting = ({
                         name="pomodoro"
                         onChange={onChangeSettingValues}
                         value={pomodoro}
+                        min={0.03}
                      />
                   </InputBlock>
                   <InputBlock>
@@ -58,6 +60,7 @@ export const TimerSetting = ({
                         name="shortBreak"
                         onChange={onChangeSettingValues}
                         value={shortBreak}
+                        min={0.03}
                      />
                   </InputBlock>
                   <InputBlock>
@@ -74,6 +77,7 @@ export const TimerSetting = ({
                         name="longBreak"
                         onChange={onChangeSettingValues}
                         value={longBreak}
+                        min={0.03}
                      />
                   </InputBlock>
                </InputWrapper>
@@ -118,21 +122,16 @@ export const TimerSetting = ({
                      name="longBreakInterval"
                      onChange={onChangeSettingValues}
                      value={longBreakInterval}
+                     min={1}
                   />
                </LongBreakIntervalInputWrapper>
             </AdvancedSettingsWrapper>
-            <AdvancedSettingsWrapper>
-               <SettingLabel>Alarm Sound</SettingLabel>
-               <AlarmSoundSelectWrapper>
-                  <select>
-                     <option value="Digital">Digital</option>
-                     <option value="Bell">Bell</option>
-                     <option value="Bird">Bird</option>
-                     <option value="Kitchen">Kitchen</option>
-                     <option value="Wood">Wood</option>
-                  </select>
-               </AlarmSoundSelectWrapper>
-            </AdvancedSettingsWrapper>
+            <AlarmSettingsWrapper>
+               <SelectDropDown>
+                  <SettingLabel>Alarm Sound</SettingLabel>
+                  <TimerSettingSelectDropdown />
+               </SelectDropDown>
+            </AlarmSettingsWrapper>
          </SettingBlock>
          <SaveSettingButtonWrapper>
             <button onClick={onUpdateSettings} disabled={isDisabled}>
@@ -145,7 +144,7 @@ export const TimerSetting = ({
 
 const SettingBlock = styled.div`
    padding: 20px 20px 0px;
-   font-family: 'Nunito', sans-serif;
+   font-family: 'ArialRounded';
 `
 
 const SettingTop = styled.div`
@@ -179,7 +178,7 @@ const SettingInputs = styled.div`
 `
 const InputWrapper = styled.div`
    display: flex;
-   width: 330px;
+   width: 360px;
    justify-content: space-between;
    margin-top: 5px;
 `
@@ -247,20 +246,6 @@ const AutoStartCheckbox = styled.label`
 const LongBreakIntervalInputWrapper = styled.div`
    width: 75px;
 `
-const AlarmSoundSelectWrapper = styled.div`
-   & select {
-      cursor: pointer;
-      width: 130px;
-      color: rgb(120, 120, 120);
-      font-weight: 500;
-      border-radius: 4px;
-      background-color: rgb(235, 235, 235);
-      padding: 12px;
-      font-size: 14px;
-      outline: none;
-      border: none;
-   }
-`
 
 const SaveSettingButtonWrapper = styled.div`
    padding: 14px 20px;
@@ -283,7 +268,21 @@ const SaveSettingButtonWrapper = styled.div`
       }
       &:disabled {
          opacity: 0.5;
-         cursor: not-allowed;
+         cursor: default;
       }
    }
+`
+const AlarmSettingsWrapper = styled.div`
+   display: flex;
+   flex-direction: column;
+   padding: 20px 0;
+   border-bottom: 1px solid #e6e5e5;
+   margin-bottom: 30px;
+`
+
+const SelectDropDown = styled.div`
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   width: 100%;
 `
