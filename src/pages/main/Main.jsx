@@ -25,6 +25,7 @@ import { TimerProgressBar } from '../../components/timer/TimerProgressBar'
 
 const Main = () => {
    const stage = useSelector((state) => state.mode.stage)
+
    const timerSettingsFromStore = useSelector((state) => state.timer)
    const {
       pomodoro,
@@ -34,6 +35,8 @@ const Main = () => {
       isAutoStartBreaks,
       isAutoStartPomodoros,
    } = useSelector((state) => state.timer.settings)
+   const selectedSound = useSelector((state) => state.timer.selectedSound)
+
    const dispatch = useDispatch()
 
    const setStage = (stage) => dispatch(modeActions.switchModeStage(stage))
@@ -59,6 +62,13 @@ const Main = () => {
    const [chartPercent, setChartPercent] = useState(0)
 
    const [timerTicking, setTimerTicking] = useState(true)
+
+   const [currentTimeUpAlarm, setCurrentTimeUpAlarm] = useState()
+
+   useEffect(() => {
+      const currentSound = sounds.find((sound) => sound.title === selectedSound)
+      setCurrentTimeUpAlarm(currentSound.src)
+   }, [selectedSound])
 
    const startStop = useSound()
 
@@ -201,7 +211,6 @@ const Main = () => {
          switchStageHandler()
       }
    }
-
    return (
       <>
          <Background bgColor={modeTimerSettings[stage].color}>
@@ -238,7 +247,7 @@ const Main = () => {
                document.getElementById('modal')
             )}
          <Audio ref={startStop.ref} src={startStopSound} />
-         <Audio ref={timeUpAlarm.ref} src={sounds.src} />
+         <Audio ref={timeUpAlarm.ref} src={currentTimeUpAlarm} />
       </>
    )
 }
